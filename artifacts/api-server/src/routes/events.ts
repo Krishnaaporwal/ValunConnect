@@ -201,6 +201,12 @@ router.post("/", requireAuth, requireRole("organizer"), async (req, res) => {
 
   const data = parsed.data;
 
+  const parsedDate = new Date(data.dateTime);
+  if (isNaN(parsedDate.getTime())) {
+    res.status(400).json({ error: "Validation error", message: "Invalid dateTime value" });
+    return;
+  }
+
   if (data.eventType === "NGO") {
     const [organizer] = await db.select().from(organizersTable).where(eq(organizersTable.id, user.profileId)).limit(1);
     if (!organizer?.ngoVerified) {
@@ -216,7 +222,7 @@ router.post("/", requireAuth, requireRole("organizer"), async (req, res) => {
     requiredSkills: data.requiredSkills,
     eventType: data.eventType,
     category: data.category ?? null,
-    dateTime: new Date(data.dateTime),
+    dateTime: parsedDate,
     location: data.location,
     lat: data.lat ?? null,
     lng: data.lng ?? null,
@@ -259,13 +265,18 @@ router.put("/:id", requireAuth, requireRole("organizer"), async (req, res) => {
   }
 
   const data = parsed.data;
+  const parsedDateUpdate = new Date(data.dateTime);
+  if (isNaN(parsedDateUpdate.getTime())) {
+    res.status(400).json({ error: "Validation error", message: "Invalid dateTime value" });
+    return;
+  }
   const [updated] = await db.update(eventsTable).set({
     title: data.title,
     description: data.description,
     requiredSkills: data.requiredSkills,
     eventType: data.eventType,
     category: data.category ?? null,
-    dateTime: new Date(data.dateTime),
+    dateTime: parsedDateUpdate,
     location: data.location,
     lat: data.lat ?? null,
     lng: data.lng ?? null,

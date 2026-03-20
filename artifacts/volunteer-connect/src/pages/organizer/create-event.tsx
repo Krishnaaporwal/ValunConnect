@@ -19,18 +19,26 @@ export default function CreateEvent() {
   
   const [isUrgent, setIsUrgent] = useState(false);
   const [eventType, setEventType] = useState<any>("NGO");
+  const [category, setCategory] = useState("Environment");
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
+
+    const rawDate = fd.get("dateTime") as string;
+    const parsedDate = new Date(rawDate);
+    if (!rawDate || isNaN(parsedDate.getTime())) {
+      toast({ title: "Invalid date", description: "Please select a valid date and time.", variant: "destructive" });
+      return;
+    }
     
     createMutation.mutate({
       data: {
         title: fd.get("title") as string,
         description: fd.get("description") as string,
         eventType: eventType,
-        category: fd.get("category") as string,
-        dateTime: new Date(fd.get("dateTime") as string).toISOString(),
+        category,
+        dateTime: parsedDate.toISOString(),
         location: fd.get("location") as string,
         lat: Number(fd.get("lat")) || undefined,
         lng: Number(fd.get("lng")) || undefined,
@@ -86,15 +94,17 @@ export default function CreateEvent() {
               </div>
               <div className="space-y-2">
                 <Label>Category</Label>
-                <Select name="category" defaultValue="Environment">
+                <Select value={category} onValueChange={setCategory}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="Environment">Environment</SelectItem>
                     <SelectItem value="Education">Education</SelectItem>
-                    <SelectItem value="Health">Health</SelectItem>
+                    <SelectItem value="Healthcare">Healthcare</SelectItem>
+                    <SelectItem value="Disaster Relief">Disaster Relief</SelectItem>
                     <SelectItem value="Animal Welfare">Animal Welfare</SelectItem>
+                    <SelectItem value="Civic">Civic</SelectItem>
                     <SelectItem value="Community">Community</SelectItem>
                   </SelectContent>
                 </Select>
