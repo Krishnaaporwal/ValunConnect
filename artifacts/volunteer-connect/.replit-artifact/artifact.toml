@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "VolunteerConnect"
+version = "1.0.0"
+id = "artifacts/volunteer-connect"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 18803
+
+[services.development]
+run = "pnpm --filter @workspace/volunteer-connect run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/volunteer-connect", "run", "build" ]
+publicDir = "artifacts/volunteer-connect/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "18803"
+BASE_PATH = "/"

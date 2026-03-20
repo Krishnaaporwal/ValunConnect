@@ -1,0 +1,21 @@
+packages:
+  "framer-motion": "Page transitions and micro-interactions"
+  "recharts": "Dashboard analytics charts"
+  "react-leaflet": "Interactive event map"
+  "leaflet": "Map rendering core"
+  "@types/leaflet": "Leaflet types"
+  "react-hook-form": "Form state management"
+  "@hookform/resolvers": "Zod validation for forms"
+  "date-fns": "Date formatting and manipulation"
+
+images:
+  - path: "artifacts/volunteer-connect/public/images/hero.png"
+    description: "A diverse group of volunteers working together happily in a community garden, sunny day, vibrant colors, modern clean flat illustration style"
+    aspect_ratio: "16:9"
+  - path: "artifacts/volunteer-connect/public/images/auth-bg.png"
+    description: "Abstract geometric background with deep teal and soft amber gradients, clean corporate aesthetic"
+    aspect_ratio: "9:16"
+
+notes:
+  - "Injected a global fetch interceptor in App.tsx to automatically append the JWT token to all Orval generated requests."
+  - "Used Leaflet for maps; css is imported globally."

@@ -1,0 +1,299 @@
+Build a full-stack web application called **"VolunteerConnect"** using modern technologies (Next.js + TypeScript + Tailwind CSS + Node.js + MongoDB or Supabase).
+
+The platform should support **two roles: Volunteer and Organizer**, with a highly user-friendly UI and scalable backend.
+
+---
+
+## 🔐 1. AUTHENTICATION SYSTEM
+
+Implement secure authentication using JWT or Supabase Auth.
+
+### Roles:
+
+1. Volunteer
+2. Organizer
+
+### Volunteer Signup Fields:
+
+* Name
+* Email
+* Password
+* Skills (editable later)
+* Interests
+* Location
+
+### Organizer Signup Fields:
+
+* Organization Name
+* Email
+* Password
+* Location
+* Organization Type:
+
+  * NGO
+  * Government
+  * Private
+
+---
+
+## 🔁 2. LOGIN / SIGNUP FLOW
+
+### Landing Page:
+
+* Button: "Join as Volunteer"
+* Button: "Join as Organizer"
+
+### Signup/Login Page:
+
+* Toggle between:
+
+  * Volunteer
+  * Organizer
+* Dynamic form rendering based on role
+
+### After Login:
+
+* Volunteer → Redirect to Volunteer Dashboard
+* Organizer → Redirect to Organizer Dashboard
+
+---
+
+## 👤 3. VOLUNTEER DASHBOARD
+
+### Features:
+
+#### 🗺️ Map Integration:
+
+* Use Leaflet or Google Maps API
+* Show nearby events as markers
+* Filters:
+
+  * Distance
+  * Category
+  * Skills
+
+#### 🧠 AI-Based Recommendation System:
+
+* Recommend events based on:
+
+  * Skills
+  * Interests
+  * Location
+
+#### 🔢 Matching Percentage System (IMPORTANT):
+
+* Show "Match %" between volunteer profile and event requirements
+* Matching logic:
+
+  * Skills match = 50%
+  * Location proximity = 20%
+  * Interests match = 20%
+  * Availability = 10%
+* Display example:
+
+  * "85% Match – Highly Recommended"
+
+#### 📚 Skills Section:
+
+* Add/update skills
+* Auto-trigger recommendations when skills updated
+
+#### 📅 My RSVPs:
+
+* Show applied events
+* Status:
+
+  * Pending
+  * Accepted
+  * Rejected
+
+#### 📊 Impact Stats:
+
+* Total hours worked
+* Events participated
+* Categories worked in
+
+---
+
+## 🏢 4. ORGANIZER DASHBOARD
+
+### Event Types:
+
+1. Government Events (No payment)
+2. Private Events (Paid opportunities)
+
+---
+
+### ➕ Create Event (IMPORTANT LOGIC):
+
+Fields:
+
+* Title
+* Description
+* Required Skills
+* Event Type (Government / Private / NGO)
+* Date & Time
+* Location (map pin)
+* Volunteers Needed
+* Hiring Urgency Toggle (Normal / Urgent 🚨)
+
+---
+
+### 💰 Payment Logic:
+
+* If Event Type = Private:
+
+  * Show payment field
+* If Event Type = NGO or Government:
+
+  * No payment field
+
+---
+
+### 🛡️ NGO Verification (VERY IMPORTANT):
+
+* If Organizer selects "NGO":
+
+  * Require NGO Darpan Registration Number
+  * Add a mock verification API or validation logic
+  * Only allow event creation if NGO is verified
+
+---
+
+### 📋 Organizer Features:
+
+* View created events
+* Manage volunteers (Accept/Reject)
+* Send announcements
+* Event analytics dashboard
+
+---
+
+## 👥 5. VOLUNTEER SELECTION SYSTEM
+
+When volunteer applies:
+
+### Organizer sees Volunteer Card:
+
+* Name
+* Age (optional)
+* Skills
+* Recent Projects
+* Total Work Hours
+* Match Percentage
+
+### Actions:
+
+* Accept ✅
+* Reject ❌
+
+---
+
+### Volunteer Side:
+
+* Real-time status update:
+
+  * Accepted
+  * Rejected
+
+---
+
+## 👤 6. VOLUNTEER PROFILE PAGE
+
+* Name & basic info
+* Skills
+* Interests
+* Recent Projects / Events
+* Total Work Time
+* Participation History
+
+👉 This should act like a "Volunteer Resume / Portfolio"
+
+---
+
+## 🧠 7. INTELLIGENT MATCHING ENGINE
+
+Build a function:
+
+matchScore = (
+skillsMatch * 0.5 +
+locationMatch * 0.2 +
+interestMatch * 0.2 +
+availabilityMatch * 0.1
+)
+
+Return:
+
+* Match %
+* Tag:
+
+  * High Match (75%+)
+  * Medium (40–75%)
+  * Low (<40%)
+
+---
+
+## 🚨 8. URGENT HIRING FEATURE
+
+* Events marked as "Urgent"
+* Show at top of listings
+* Highlight with red badge
+* Notify volunteers instantly
+
+---
+
+## 🗺️ 9. MAP FEATURES
+
+* Event markers on map
+* Color coding:
+
+  * 🔴 High match
+  * 🟡 Medium
+  * ⚪ Low
+* Click marker → Show event details popup
+
+---
+
+## 🎨 UI/UX REQUIREMENTS
+
+* Clean, modern UI (Tailwind CSS)
+* Mobile responsive
+* Dashboard cards layout
+* Smooth transitions
+* Toast notifications for actions
+
+---
+
+## ⚙️ TECH STACK
+
+Frontend:
+
+* Next.js (App Router)
+* TypeScript
+* Tailwind CSS
+
+Backend:
+
+* Node.js + Express OR Supabase
+
+Database:
+
+* MongoDB OR Supabase DB
+
+Extras:
+
+* Map: Leaflet or Google Maps
+* Auth: JWT or Supabase Auth
+
+---
+
+## 🧩 BONUS (if possible):
+
+* Real-time notifications (Socket.io or Supabase Realtime)
+* Email alerts for acceptance/rejection
+* Search & filter system
+* Dark mode
+
+---
+
+Make sure the code is modular, scalable, and production-ready. Include API routes, database schema, and clean component structure.

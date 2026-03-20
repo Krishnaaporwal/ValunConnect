@@ -1,22 +1,31 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: VolunteerConnect API specification
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: auth
+    description: Authentication operations
+  - name: volunteers
+    description: Volunteer operations
+  - name: organizers
+    description: Organizer operations
+  - name: events
+    description: Event operations
+  - name: applications
+    description: Application/RSVP operations
+
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,7 +33,524 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /auth/signup/volunteer:
+    post:
+      operationId: signupVolunteer
+      tags: [auth]
+      summary: Signup as volunteer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VolunteerSignupRequest"
+      responses:
+        "201":
+          description: Volunteer created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Email already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/signup/organizer:
+    post:
+      operationId: signupOrganizer
+      tags: [auth]
+      summary: Signup as organizer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrganizerSignupRequest"
+      responses:
+        "201":
+          description: Organizer created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Email already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      summary: Login (volunteer or organizer)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/me:
+    get:
+      operationId: getMe
+      tags: [auth]
+      summary: Get current user
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /volunteers/profile:
+    get:
+      operationId: getVolunteerProfile
+      tags: [volunteers]
+      summary: Get own volunteer profile
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Volunteer profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VolunteerProfile"
+    put:
+      operationId: updateVolunteerProfile
+      tags: [volunteers]
+      summary: Update volunteer profile
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateVolunteerProfileRequest"
+      responses:
+        "200":
+          description: Updated volunteer profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VolunteerProfile"
+
+  /volunteers/{id}:
+    get:
+      operationId: getVolunteerById
+      tags: [volunteers]
+      summary: Get volunteer public profile by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Volunteer profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VolunteerProfile"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /volunteers/stats:
+    get:
+      operationId: getVolunteerStats
+      tags: [volunteers]
+      summary: Get volunteer impact stats
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Volunteer stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VolunteerStats"
+
+  /events:
+    get:
+      operationId: listEvents
+      tags: [events]
+      summary: List events (with filters)
+      parameters:
+        - name: category
+          in: query
+          schema:
+            type: string
+        - name: skills
+          in: query
+          schema:
+            type: string
+          description: Comma-separated skills
+        - name: urgent
+          in: query
+          schema:
+            type: boolean
+        - name: lat
+          in: query
+          schema:
+            type: number
+        - name: lng
+          in: query
+          schema:
+            type: number
+        - name: radius
+          in: query
+          schema:
+            type: number
+          description: Radius in km
+        - name: search
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Event"
+
+    post:
+      operationId: createEvent
+      tags: [events]
+      summary: Create a new event (organizer only)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateEventRequest"
+      responses:
+        "201":
+          description: Created event
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+        "400":
+          description: Validation error or NGO not verified
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /events/recommended:
+    get:
+      operationId: getRecommendedEvents
+      tags: [events]
+      summary: Get recommended events for logged-in volunteer
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Recommended events with match scores
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EventWithMatch"
+
+  /events/{id}:
+    get:
+      operationId: getEventById
+      tags: [events]
+      summary: Get event by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Event
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    put:
+      operationId: updateEvent
+      tags: [events]
+      summary: Update event (organizer only)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateEventRequest"
+      responses:
+        "200":
+          description: Updated event
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+
+    delete:
+      operationId: deleteEvent
+      tags: [events]
+      summary: Delete event (organizer only)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /events/{id}/applications:
+    get:
+      operationId: getEventApplications
+      tags: [applications]
+      summary: Get applications for an event (organizer only)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of applications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApplicationWithVolunteer"
+
+  /applications:
+    post:
+      operationId: applyToEvent
+      tags: [applications]
+      summary: Apply to an event (volunteer only)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApplyRequest"
+      responses:
+        "201":
+          description: Application created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Application"
+        "400":
+          description: Already applied
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /applications/my:
+    get:
+      operationId: getMyApplications
+      tags: [applications]
+      summary: Get my applications (volunteer only)
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: List of my applications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApplicationWithEvent"
+
+  /applications/{id}/status:
+    put:
+      operationId: updateApplicationStatus
+      tags: [applications]
+      summary: Accept or reject application (organizer only)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateApplicationStatusRequest"
+      responses:
+        "200":
+          description: Updated application
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Application"
+
+  /organizers/profile:
+    get:
+      operationId: getOrganizerProfile
+      tags: [organizers]
+      summary: Get organizer profile
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Organizer profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrganizerProfile"
+
+  /organizers/events:
+    get:
+      operationId: getOrganizerEvents
+      tags: [organizers]
+      summary: Get organizer's events
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: List of organizer events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Event"
+
+  /organizers/verify-ngo:
+    post:
+      operationId: verifyNgo
+      tags: [organizers]
+      summary: Verify NGO registration number
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NgoVerifyRequest"
+      responses:
+        "200":
+          description: Verification result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NgoVerifyResponse"
+
+  /organizers/stats:
+    get:
+      operationId: getOrganizerStats
+      tags: [organizers]
+      summary: Get organizer analytics
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Organizer stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrganizerStats"
+
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
   schemas:
     HealthStatus:
       type: object
@@ -34,3 +560,448 @@ components:
       required:
         - status
 
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+      required:
+        - error
+
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+      required:
+        - success
+
+    AuthResponse:
+      type: object
+      properties:
+        token:
+          type: string
+        user:
+          $ref: "#/components/schemas/UserInfo"
+      required:
+        - token
+        - user
+
+    UserInfo:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+        role:
+          type: string
+          enum: [volunteer, organizer]
+        name:
+          type: string
+      required:
+        - id
+        - email
+        - role
+        - name
+
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+        role:
+          type: string
+          enum: [volunteer, organizer]
+      required:
+        - email
+        - password
+        - role
+
+    VolunteerSignupRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 6
+        skills:
+          type: array
+          items:
+            type: string
+        interests:
+          type: array
+          items:
+            type: string
+        location:
+          type: string
+        lat:
+          type: number
+        lng:
+          type: number
+      required:
+        - name
+        - email
+        - password
+
+    OrganizerSignupRequest:
+      type: object
+      properties:
+        organizationName:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 6
+        location:
+          type: string
+        organizationType:
+          type: string
+          enum: [NGO, Government, Private]
+        ngoRegistrationNumber:
+          type: string
+        lat:
+          type: number
+        lng:
+          type: number
+      required:
+        - organizationName
+        - email
+        - password
+        - organizationType
+
+    UpdateVolunteerProfileRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        skills:
+          type: array
+          items:
+            type: string
+        interests:
+          type: array
+          items:
+            type: string
+        location:
+          type: string
+        lat:
+          type: number
+        lng:
+          type: number
+        bio:
+          type: string
+        availability:
+          type: string
+
+    VolunteerProfile:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        location:
+          type: string
+        lat:
+          type: number
+        lng:
+          type: number
+        skills:
+          type: array
+          items:
+            type: string
+        interests:
+          type: array
+          items:
+            type: string
+        bio:
+          type: string
+        availability:
+          type: string
+        totalHours:
+          type: number
+        eventsParticipated:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - email
+
+    VolunteerStats:
+      type: object
+      properties:
+        totalHours:
+          type: number
+        eventsParticipated:
+          type: integer
+        categoriesWorked:
+          type: array
+          items:
+            type: string
+        upcomingEvents:
+          type: integer
+      required:
+        - totalHours
+        - eventsParticipated
+        - categoriesWorked
+        - upcomingEvents
+
+    OrganizerProfile:
+      type: object
+      properties:
+        id:
+          type: integer
+        organizationName:
+          type: string
+        email:
+          type: string
+        location:
+          type: string
+        organizationType:
+          type: string
+          enum: [NGO, Government, Private]
+        ngoVerified:
+          type: boolean
+        ngoRegistrationNumber:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - organizationName
+        - email
+        - organizationType
+
+    OrganizerStats:
+      type: object
+      properties:
+        totalEvents:
+          type: integer
+        activeEvents:
+          type: integer
+        totalApplications:
+          type: integer
+        totalAccepted:
+          type: integer
+        totalVolunteers:
+          type: integer
+      required:
+        - totalEvents
+        - activeEvents
+        - totalApplications
+        - totalAccepted
+        - totalVolunteers
+
+    Event:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        requiredSkills:
+          type: array
+          items:
+            type: string
+        eventType:
+          type: string
+          enum: [Government, Private, NGO]
+        category:
+          type: string
+        dateTime:
+          type: string
+          format: date-time
+        location:
+          type: string
+        lat:
+          type: number
+        lng:
+          type: number
+        volunteersNeeded:
+          type: integer
+        volunteersAccepted:
+          type: integer
+        isUrgent:
+          type: boolean
+        paymentAmount:
+          type: number
+        organizerId:
+          type: integer
+        organizerName:
+          type: string
+        organizerType:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - title
+        - description
+        - eventType
+        - dateTime
+        - location
+        - volunteersNeeded
+        - isUrgent
+        - organizerId
+
+    EventWithMatch:
+      allOf:
+        - $ref: "#/components/schemas/Event"
+        - type: object
+          properties:
+            matchScore:
+              type: number
+            matchLabel:
+              type: string
+              enum: ["High Match", "Medium Match", "Low Match"]
+            skillsMatch:
+              type: number
+            locationMatch:
+              type: number
+            interestMatch:
+              type: number
+          required:
+            - matchScore
+            - matchLabel
+
+    CreateEventRequest:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        requiredSkills:
+          type: array
+          items:
+            type: string
+        eventType:
+          type: string
+          enum: [Government, Private, NGO]
+        category:
+          type: string
+        dateTime:
+          type: string
+          format: date-time
+        location:
+          type: string
+        lat:
+          type: number
+        lng:
+          type: number
+        volunteersNeeded:
+          type: integer
+        isUrgent:
+          type: boolean
+        paymentAmount:
+          type: number
+      required:
+        - title
+        - description
+        - eventType
+        - dateTime
+        - location
+        - volunteersNeeded
+
+    Application:
+      type: object
+      properties:
+        id:
+          type: integer
+        volunteerId:
+          type: integer
+        eventId:
+          type: integer
+        status:
+          type: string
+          enum: [pending, accepted, rejected]
+        appliedAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - volunteerId
+        - eventId
+        - status
+
+    ApplicationWithEvent:
+      allOf:
+        - $ref: "#/components/schemas/Application"
+        - type: object
+          properties:
+            event:
+              $ref: "#/components/schemas/Event"
+
+    ApplicationWithVolunteer:
+      allOf:
+        - $ref: "#/components/schemas/Application"
+        - type: object
+          properties:
+            volunteer:
+              $ref: "#/components/schemas/VolunteerProfile"
+            matchScore:
+              type: number
+            matchLabel:
+              type: string
+
+    ApplyRequest:
+      type: object
+      properties:
+        eventId:
+          type: integer
+      required:
+        - eventId
+
+    UpdateApplicationStatusRequest:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [accepted, rejected]
+      required:
+        - status
+
+    NgoVerifyRequest:
+      type: object
+      properties:
+        ngoRegistrationNumber:
+          type: string
+      required:
+        - ngoRegistrationNumber
+
+    NgoVerifyResponse:
+      type: object
+      properties:
+        verified:
+          type: boolean
+        message:
+          type: string
+      required:
+        - verified
+        - message
