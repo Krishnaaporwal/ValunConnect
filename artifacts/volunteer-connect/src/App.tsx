@@ -4,6 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import { AuthProvider, useAuth } from "@/lib/auth";
+import { setAuthTokenGetter } from "@workspace/api-client-react";
 
 // Pages
 import LandingPage from "@/pages/landing";
@@ -15,20 +16,9 @@ import VolunteerProfile from "@/pages/volunteer/profile";
 import OrganizerDashboard from "@/pages/organizer/dashboard";
 import CreateEvent from "@/pages/organizer/create-event";
 
-// --- GLOBAL FETCH INTERCEPTOR FOR AUTH ---
-// This ensures all requests from Orval generated code automatically include the JWT token.
-const originalFetch = window.fetch;
-window.fetch = async (input, init) => {
-  const token = localStorage.getItem("token");
-  if (token) {
-    init = init || {};
-    init.headers = {
-      ...init.headers,
-      Authorization: `Bearer ${token}`
-    };
-  }
-  return originalFetch(input, init);
-};
+// Register the auth token getter so every generated API hook automatically
+// sends the JWT. The custom fetch client calls this before each request.
+setAuthTokenGetter(() => localStorage.getItem("token"));
 
 const queryClient = new QueryClient({
   defaultOptions: {

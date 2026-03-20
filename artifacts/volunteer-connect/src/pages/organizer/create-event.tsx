@@ -18,7 +18,7 @@ export default function CreateEvent() {
   const createMutation = useCreateEvent();
   
   const [isUrgent, setIsUrgent] = useState(false);
-  const [eventType, setEventType] = useState<any>("NGO");
+  const [eventType, setEventType] = useState<any>("Government");
   const [category, setCategory] = useState("Environment");
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
