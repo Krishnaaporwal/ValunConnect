@@ -75,7 +75,7 @@ router.get("/my", requireAuth, requireRole("volunteer"), async (req, res) => {
 
 router.put("/:id/status", requireAuth, requireRole("organizer"), async (req, res) => {
   const user = (req as any).user;
-  const appId = parseInt(req.params.id);
+  const appId = parseInt(req.params.id as string);
 
   if (isNaN(appId)) {
     res.status(400).json({ error: "Bad request", message: "Invalid ID" });

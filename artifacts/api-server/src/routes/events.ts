@@ -140,7 +140,7 @@ router.get("/:id", async (req, res) => {
 
 router.get("/:id/applications", requireAuth, requireRole("organizer"), async (req, res) => {
   const user = (req as any).user;
-  const eventId = parseInt(req.params.id);
+  const eventId = parseInt(req.params.id as string);
 
   if (isNaN(eventId)) {
     res.status(400).json({ error: "Bad request", message: "Invalid ID" });
@@ -242,7 +242,7 @@ router.post("/", requireAuth, requireRole("organizer"), async (req, res) => {
 
 router.put("/:id", requireAuth, requireRole("organizer"), async (req, res) => {
   const user = (req as any).user;
-  const eventId = parseInt(req.params.id);
+  const eventId = parseInt(req.params.id as string);
 
   if (isNaN(eventId)) {
     res.status(400).json({ error: "Bad request", message: "Invalid ID" });
@@ -296,7 +296,7 @@ router.put("/:id", requireAuth, requireRole("organizer"), async (req, res) => {
 
 router.delete("/:id", requireAuth, requireRole("organizer"), async (req, res) => {
   const user = (req as any).user;
-  const eventId = parseInt(req.params.id);
+  const eventId = parseInt(req.params.id as string);
 
   if (isNaN(eventId)) {
     res.status(400).json({ error: "Bad request", message: "Invalid ID" });
