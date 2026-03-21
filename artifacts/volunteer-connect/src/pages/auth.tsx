@@ -18,6 +18,7 @@ export default function AuthPage() {
   
   const [isLogin, setIsLogin] = useState(true);
   const [role, setRole] = useState<"volunteer" | "organizer">("volunteer");
+  const [orgType, setOrgType] = useState<string>("NGO");
 
   const loginMutation = useLogin();
   const signupVolMutation = useSignupVolunteer();
@@ -146,7 +147,12 @@ export default function AuthPage() {
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="organizationType">Organization Type</Label>
-                      <Select name="organizationType" defaultValue="NGO">
+                      <Select 
+                        name="organizationType" 
+                        value={orgType} 
+                        onValueChange={setOrgType}
+                        defaultValue="NGO"
+                      >
                         <SelectTrigger className="bg-secondary/50">
                           <SelectValue placeholder="Select type" />
                         </SelectTrigger>
@@ -157,10 +163,20 @@ export default function AuthPage() {
                         </SelectContent>
                       </Select>
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="ngoRegistrationNumber">NGO Reg Number (optional)</Label>
-                      <Input id="ngoRegistrationNumber" name="ngoRegistrationNumber" placeholder="REG-12345" className="bg-secondary/50 focus:bg-background" />
-                    </div>
+
+                    {orgType === "NGO" && (
+                      <div className="space-y-2">
+                        <Label htmlFor="ngoRegistrationNumber">NGO Reg Number</Label>
+                        <Input id="ngoRegistrationNumber" name="ngoRegistrationNumber" required placeholder="REG-12345" className="bg-secondary/50 focus:bg-background" />
+                      </div>
+                    )}
+
+                    {orgType === "Government" && (
+                      <div className="space-y-2">
+                        <Label htmlFor="govtType">Type of Government Body</Label>
+                        <Input id="govtType" name="govtType" required placeholder="Central / State / Local" className="bg-secondary/50 focus:bg-background" />
+                      </div>
+                    )}
                   </>
                 )}
 
