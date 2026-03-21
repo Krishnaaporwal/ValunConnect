@@ -13,8 +13,6 @@
     "typescript": "~5.9.2"
   },
   "dependencies": {
-    "@rollup/rollup-win32-x64-msvc": "^4.59.0",
-    "lightningcss-win32-x64-msvc": "^1.32.0",
     "tailwind-merge": "^3.0.1"
   }
 }
