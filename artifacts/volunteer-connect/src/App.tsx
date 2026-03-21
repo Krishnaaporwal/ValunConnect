@@ -4,7 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import { AuthProvider, useAuth } from "@/lib/auth";
-import { setAuthTokenGetter } from "@workspace/api-client-react";
+import { setAuthTokenGetter, setBaseUrl } from "@workspace/api-client-react";
 
 // Pages
 import LandingPage from "@/pages/landing";
@@ -19,6 +19,7 @@ import CreateEvent from "@/pages/organizer/create-event";
 // Register the auth token getter so every generated API hook automatically
 // sends the JWT. The custom fetch client calls this before each request.
 setAuthTokenGetter(() => localStorage.getItem("token"));
+setBaseUrl(import.meta.env.VITE_API_URL);
 
 const queryClient = new QueryClient({
   defaultOptions: {
