@@ -199,14 +199,20 @@ npm run dev
 
 ---
 
-## 📸 Screenshots
-
-(Add your UI screenshots here)
-
+## 
 * Landing Page
+<img width="1912" height="915" alt="image" src="https://github.com/user-attachments/assets/4504ab29-e635-48e9-b897-dbe95e3ed658" />
+<img width="1912" height="917" alt="image" src="https://github.com/user-attachments/assets/f2eb8fcb-730c-4c0b-adb2-6adf6f660edf" />
 * Volunteer Dashboard
+<img width="1907" height="912" alt="image" src="https://github.com/user-attachments/assets/96a3ceae-64f4-4fc5-bb3a-72058b581fb5" />
+<img width="1878" height="905" alt="image" src="https://github.com/user-attachments/assets/bfccc8ef-785a-49ea-a01e-7b15fff00b21" />
+<img width="1898" height="405" alt="image" src="https://github.com/user-attachments/assets/971c0b88-a871-42bb-8a3e-122553aed529" />
 * Organizer Dashboard
-* Map View
+<img width="1908" height="917" alt="image" src="https://github.com/user-attachments/assets/8c18b3d8-db04-4a41-8d7f-261502a7e36d" />
+<img width="1900" height="911" alt="image" src="https://github.com/user-attachments/assets/f9c7a9c6-ad49-48c9-a5cf-77d1f1bb15c8" />
+<img width="1896" height="912" alt="image" src="https://github.com/user-attachments/assets/caa3a484-7901-49e4-952d-570da70b2a8f" />
+
+
 
 ---
 
