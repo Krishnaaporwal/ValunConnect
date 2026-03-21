@@ -2,6 +2,7 @@ import { useGetVolunteerStats, useGetRecommendedEvents, useApplyToEvent } from "
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { EventCard } from "@/components/EventCard";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { Clock, CheckCircle2, TrendingUp, Heart, Calendar, ArrowRight } from "lucide-react";
