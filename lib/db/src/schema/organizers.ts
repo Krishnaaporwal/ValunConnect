@@ -14,6 +14,7 @@ export const organizersTable = pgTable("organizers", {
   lng: doublePrecision("lng"),
   organizationType: orgTypeEnum("organization_type").notNull(),
   ngoRegistrationNumber: text("ngo_registration_number"),
+  govtType: text("govt_type"),
   ngoVerified: boolean("ngo_verified").default(false).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });

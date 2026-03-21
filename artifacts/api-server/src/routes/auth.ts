@@ -24,6 +24,7 @@ const organizerSignupSchema = z.object({
   location: z.string().optional(),
   organizationType: z.enum(["NGO", "Government", "Private"]),
   ngoRegistrationNumber: z.string().optional(),
+  govtType: z.string().optional(),
   lat: z.number().optional(),
   lng: z.number().optional(),
 });
@@ -78,7 +79,7 @@ router.post("/signup/organizer", async (req, res) => {
     return;
   }
 
-  const { organizationName, email, password, location, organizationType, ngoRegistrationNumber, lat, lng } = parsed.data;
+  const { organizationName, email, password, location, organizationType, ngoRegistrationNumber, govtType, lat, lng } = parsed.data;
 
   const existing = await db.select().from(usersTable).where(eq(usersTable.email, email)).limit(1);
   if (existing.length > 0) {
@@ -98,6 +99,7 @@ router.post("/signup/organizer", async (req, res) => {
     lng: lng ?? null,
     organizationType,
     ngoRegistrationNumber: ngoRegistrationNumber ?? null,
+    govtType: govtType ?? null,
     ngoVerified: false,
   }).returning();
 
