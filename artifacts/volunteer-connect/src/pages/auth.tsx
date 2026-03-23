@@ -73,9 +73,9 @@ export default function AuthPage() {
           email: fd.get("email") as string,
           password: fd.get("password") as string,
           location: fd.get("location") as string,
-          organizationType: fd.get("organizationType") as any,
-          ngoRegistrationNumber: fd.get("ngoRegistrationNumber") as string,
-          govtType: fd.get("govtType") as string,
+          organizationType: orgType as any,
+          ngoRegistrationNumber: (fd.get("ngoRegistrationNumber") as string) || undefined,
+          govtType: (fd.get("govtType") as string) || undefined,
         }
       }, {
         onSuccess: (res) => {

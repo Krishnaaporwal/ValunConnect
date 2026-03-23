@@ -19,7 +19,7 @@ import CreateEvent from "@/pages/organizer/create-event";
 // Register the auth token getter so every generated API hook automatically
 // sends the JWT. The custom fetch client calls this before each request.
 setAuthTokenGetter(() => localStorage.getItem("token"));
-setBaseUrl(import.meta.env.VITE_API_URL);
+setBaseUrl(import.meta.env.VITE_API_URL.replace(/\/api$/, ""));
 
 const queryClient = new QueryClient({
   defaultOptions: {
