@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 import { EventWithMatch, Event } from "@workspace/api-client-react";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
